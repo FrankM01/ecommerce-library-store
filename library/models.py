@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import format_html
 
 
 # Create your models here.
@@ -31,3 +32,13 @@ class Producto(models.Model):
     def delete(self, using=None, keep_parents=False):
         self.imagen.storage.delete(self.imagen.name)
         super().delete()
+
+    def coloreado(self):
+        if self.stock >= 10:
+            return format_html(
+                '<span style="color: blue;">{0}</span>'.format(self.stock)
+            )
+        else:
+            return format_html(
+                '<span style="color: red;">{0}</span>'.format(self.stock)
+            )

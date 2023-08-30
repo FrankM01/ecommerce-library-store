@@ -22,7 +22,7 @@ def nosotros(request):
 
 
 def productos(request):
-    productos = Producto.objects.all()
+    productos = Producto.objects.all().order_by("nombre", "stock")
     return render(request, "productos/index.html", {"productos": productos})
     # print(productos)
 
