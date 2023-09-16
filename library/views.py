@@ -13,7 +13,6 @@ from .models import Producto  # Importamos el modelo Producto
 # Pagina
 
 
-@login_required
 def inicio(request):
     username = request.user.username
     return render(request, "paginas/inicio.html", {"username": username})

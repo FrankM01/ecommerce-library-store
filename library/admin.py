@@ -1,15 +1,17 @@
 from django.contrib import admin
 from .models import Producto
+from django.utils.html import format_html
 
 
 # Register your models here.
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ("id", "datos", "marca", "datos_precio", "coloreado")
+    # readonly_fields = ("estado_stock",)
+    list_display = ("id", "nombre", "marca", "precio", "estado_stock")
     # ordering = ("id", "nombre")
-    search_fields = ("datos", "marca", "categoria")
+    search_fields = ("nombre", "marca", "categoria")
     # list_editable = ("stock",)
-    list_display_links = ("datos",)
+    list_display_links = ("nombre",)
     list_filter = ("categoria",)
     list_per_page = 10
     # Opciones avanzadas
@@ -18,7 +20,7 @@ class ProductoAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    "datos",
+                    "nombre",
                     "imagen",
                     "marca",
                     "categoria",
@@ -30,21 +32,21 @@ class ProductoAdmin(admin.ModelAdmin):
             {
                 "classes": ("collapse", "wide", "extrapretty"),
                 "fields": (
-                    "datos_precio",
-                    "coloreado",
+                    "precio",
+                    "stock",
                 ),
             },
         ),
     )
 
-    def datos(self, obj):
+    def nombre(self, obj):
         return obj.nombre.upper()
 
-    def datos_precio(self, obj):
+    def precio(self, obj):
         return obj.precio
 
-    datos.short_description = "PRODUCTOS"
-    datos.empty_value_display = "???"
-    datos.admin_order_field = "nombre"
-    datos_precio.short_description = "PRECIO (S/.)"
-    Producto.coloreado.short_description = "STOCK"
+    nombre.short_description = "PRODUCTOS"
+    nombre.empty_value_display = "???"
+    nombre.admin_order_field = "nombre"
+    precio.short_description = "PRECIO (S/.)"
+    # Producto.stock.short_description = "STOCK"

@@ -33,7 +33,7 @@ class Producto(models.Model):
         self.imagen.storage.delete(self.imagen.name)
         super().delete()
 
-    def coloreado(self):
+    def estado_stock(self):
         if self.stock >= 10:
             return format_html(
                 '<span style="color: blue;">{0}</span>'.format(self.stock)
