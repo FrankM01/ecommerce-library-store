@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.html import format_html
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -42,3 +43,22 @@ class Producto(models.Model):
             return format_html(
                 '<span style="color: red;">{0}</span>'.format(self.stock)
             )
+
+
+class Carrito(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    productos = models.ManyToManyField(Producto, through="CarritoItem")
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=100)
+
+    def calcular_total(self):
+        total = sum(
+            item.producto.precio * item.cantidad for item in self.carritoitem_set.all()
+        )
+        return total
+
+
+class CarritoItem(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
