@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Producto, Carrito, CarritoItem  # Importamos el modelo Producto
+from .models import Producto, Carrito
 
 # Create your views here.
 
@@ -56,34 +56,30 @@ def editar_productos(request):
     return render(request, "productos/editar.html")
 
 
-def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Producto, pk=producto_id)
-    cantidad = int(request.POST.get("cantidad", 1))
-    carrito, creado = Carrito.objects.get_or_create(
-        usuario=request.user, estado="activo"
-    )
-
-    # Verifica si el producto ya está en el carrito y, en ese caso, actualiza la cantidad
-    if CarritoItem.objects.filter(carrito=carrito, producto=producto).exists():
-        carrito_item = CarritoItem.objects.get(carrito=carrito, producto=producto)
-        carrito_item.cantidad += cantidad
-        carrito_item.save()
-    else:
-        carrito_item = CarritoItem(
-            carrito=carrito, producto=producto, cantidad=cantidad
-        )
-        carrito_item.save()
-
-    return redirect("ver_carrito")
+def agregar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id=producto_id)
+    precio_serializable = float(producto.precio)
+    carrito.agregar(producto, precio_serializable)
+    return redirect("inicio")
 
 
-def eliminar_del_carrito(request, carrito_item_id):
-    carrito_item = get_object_or_404(CarritoItem, pk=carrito_item_id)
-    if carrito_item.carrito.usuario == request.user:
-        carrito_item.delete()
-    return redirect("ver_carrito")
+def eliminar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id=producto_id)
+    carrito.eliminar(producto)
+    return redirect("inicio")
 
 
-def ver_carrito(request):
-    carrito = Carrito.objects.get(usuario=request.user, estado="activo")
-    return render(request, "carrito/ver_carrito.html", {"carrito": carrito})
+def restar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id=producto_id)
+    precio_serializable = float(producto.precio)
+    carrito.restar(producto, precio_serializable)
+    return redirect("inicio")
+
+
+def limpiar_producto(request):
+    carrito = Carrito(request)
+    carrito.limpiar()
+    return redirect("inicio")
