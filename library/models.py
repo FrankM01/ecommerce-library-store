@@ -1,12 +1,34 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext as _
 from django.utils.html import format_html
 from django.contrib.auth.models import User
+
+
+# Functions
+def validate_nombre_length(value):
+    if not 4 <= len(value) <= 50:
+        raise ValidationError(
+            _("El nombre debe tener entre 4 y 50 caracteres."),
+            code="invalid_nombre_length",
+        )
+
+
+def validate_nombre(value):
+    if not value.strip():
+        raise ValidationError(
+            _("El nombre no puede estar en blanco."), code="invalid_nombre"
+        )
 
 
 # Create your models here.
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100, verbose_name="Nombre")
+    nombre = models.CharField(
+        max_length=51,
+        verbose_name="Nombre",
+        validators=[validate_nombre_length, validate_nombre],
+    )
     imagen = models.ImageField(upload_to="imagenes/", verbose_name="Imagen", null=True)
     marca = models.CharField(max_length=100, verbose_name="Marca")
     categoria = models.CharField(max_length=100, verbose_name="Categoria")
