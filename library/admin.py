@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Producto
+from .models import Producto, Categoria
 from django.utils.html import format_html
 
 from django.contrib.auth.admin import UserAdmin
@@ -53,6 +53,16 @@ class ProductoAdmin(admin.ModelAdmin):
     nombre.admin_order_field = "nombre"
     precio.short_description = "PRECIO (S/.)"
     # Producto.stock.short_description = "STOCK"
+
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = (
+        "nombre",
+        "descripcion",
+    )  # Personaliza los campos que se muestran en la lista
+    search_fields = ("nombre", "descripcion")  # Agrega campos de búsqueda si lo deseas
+    list_filter = ("nombre",)  # Agrega filtros si es necesario
 
 
 class CustomUserAdmin(UserAdmin):

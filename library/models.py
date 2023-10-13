@@ -11,7 +11,7 @@ from django.contrib.auth.models import User, Group
 client_group, created = Group.objects.get_or_create(name="Cliente")
 
 User.add_to_class("age", models.PositiveIntegerField(default=1))
-User.add_to_class("phone_number", models.CharField(max_length=9))
+User.add_to_class("phone_number", models.CharField(max_length=9, default=""))
 
 
 # Functions
@@ -112,6 +112,22 @@ def validate_stock_positive(value):
 
 
 # Create your models here.
+
+
+class Categoria(models.Model):
+    nombre = models.CharField(
+        max_length=100,
+        verbose_name="Categoria",
+        validators=[validate_cate_length, validate_cate_letters_only],
+        null=True,
+        blank=True,
+    )
+    descripcion = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre
+
+
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(
@@ -134,11 +150,12 @@ class Producto(models.Model):
         validators=[validate_marca_length, validate_marca_letters_only],
         null=True,
     )
-    categoria = models.CharField(
-        max_length=100,
-        verbose_name="Categoria",
-        validators=[validate_cate_length, validate_cate_letters_only],
+
+    categoria = models.ForeignKey(
+        Categoria,
+        on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     precio = models.DecimalField(
         max_digits=10,
