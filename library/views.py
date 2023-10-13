@@ -1,7 +1,11 @@
-from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+
 from .models import Producto, Carrito
 
 # Create your views here.
@@ -83,3 +87,19 @@ def limpiar_producto(request):
     carrito = Carrito(request)
     carrito.limpiar()
     return redirect("inicio")
+
+
+def registro_cliente(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Asignamos al grupo cliente
+            group = Group.objects.get(name="Cliente")
+            user.groups.add(group)
+            # Inicia sesion al usuario
+            login(request, user)
+            return redirect("inicio")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, "registration/registro_cliente.html", {"form": form})

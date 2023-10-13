@@ -3,7 +3,15 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.translation import gettext as _
 from django.utils.html import format_html
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+
+# Var globales
+
+# Creacion de clientes en la administracion de Grupos de Django.
+client_group, created = Group.objects.get_or_create(name="Cliente")
+
+User.add_to_class("age", models.PositiveIntegerField(default=1))
+User.add_to_class("phone_number", models.CharField(max_length=9))
 
 
 # Functions
