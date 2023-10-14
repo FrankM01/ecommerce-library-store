@@ -127,6 +127,13 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nombre
 
+    def clean(self):
+        existing_categories = Categoria.objects.filter(nombre=self.nombre)
+        if self.pk:
+            existing_categories = existing_categories.exclude(pk=self.pk)
+        if existing_categories.exists():
+            raise ValidationError("Ya existe una categoria con este nombre.")
+
 
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
