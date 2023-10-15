@@ -2,9 +2,8 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from .forms import CustomUserCreationForm
-from django.contrib.auth.decorators import login_required
 
 from .models import Producto, Carrito
 
@@ -65,14 +64,14 @@ def agregar_producto(request, producto_id):
     producto = Producto.objects.get(id=producto_id)
     precio_serializable = float(producto.precio)
     carrito.agregar(producto, precio_serializable)
-    return redirect("inicio")
+    return redirect("productos")
 
 
 def eliminar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = Producto.objects.get(id=producto_id)
     carrito.eliminar(producto)
-    return redirect("inicio")
+    return redirect("productos")
 
 
 def restar_producto(request, producto_id):
@@ -80,13 +79,13 @@ def restar_producto(request, producto_id):
     producto = Producto.objects.get(id=producto_id)
     precio_serializable = float(producto.precio)
     carrito.restar(producto, precio_serializable)
-    return redirect("inicio")
+    return redirect("productos")
 
 
 def limpiar_producto(request):
     carrito = Carrito(request)
     carrito.limpiar()
-    return redirect("inicio")
+    return redirect("productos")
 
 
 def registro_cliente(request):
@@ -99,6 +98,9 @@ def registro_cliente(request):
             user.groups.add(group)
             # Inicia sesion al usuario
             login(request, user)
+
+            # Creamos un carrito para el usuario
+            # carrrito, created = Carrito.objects.get_or_create(usuario=user)
             return redirect("inicio")
     else:
         form = CustomUserCreationForm()

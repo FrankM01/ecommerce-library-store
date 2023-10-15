@@ -1,9 +1,8 @@
-from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
-from django.db import models
-from django.utils.translation import gettext as _
 from django.utils.html import format_html
 from django.contrib.auth.models import User, Group
+from django.db import models
+from .validators import *
 
 # Var globales
 
@@ -12,103 +11,6 @@ client_group, created = Group.objects.get_or_create(name="Cliente")
 
 User.add_to_class("age", models.PositiveIntegerField(default=1))
 User.add_to_class("phone_number", models.CharField(max_length=9, default=""))
-
-
-# Functions
-def validate_nombre_length(value):
-    if not 4 <= len(value) <= 50:
-        raise ValidationError(
-            _("El nombre debe tener entre 4 y 50 caracteres."),
-            code="invalid_nombre_length",
-        )
-
-
-def validate_marca_length(value):
-    if not 3 <= len(value) <= 30:
-        raise ValidationError(
-            _("La marca debe tener entre 3 y 30 caracteres."),
-            code="invalid_nombre_length",
-        )
-
-
-def validate_cate_length(value):
-    if not 3 <= len(value) <= 30:
-        raise ValidationError(
-            _("La categoria debe tener entre 3 y 30 caracteres."),
-            code="invalid_nombre_length",
-        )
-
-
-def validate_nombre(value):
-    if not value.strip():
-        raise ValidationError(
-            _("El nombre no puede estar en blanco."), code="invalid_nombre"
-        )
-
-
-def custom_upload_to(instance, filename):
-    # Genera un nombre de archivo único o un subdirectorio basado en el producto o ID del producto
-    return f"productos/{instance.id}/{filename}"
-
-
-def validate_image_size(value):
-    # Obtiene el tamaño del archivo en bytes
-    file_size = value.size
-
-    # Establece el tamaño máximo permitido en bytes (en este caso, 5 MB)
-    max_size = 5 * 1024 * 1024  # 5 MB en bytes
-
-    if file_size > max_size:
-        raise ValidationError(
-            _("El tamaño del archivo no debe superar los 5 MB."),
-            code="invalid_image_size",
-        )
-
-
-def validate_marca_letters_only(value):
-    # Verifica si el valor contiene solo letras (sin caracteres especiales ni números)
-    if not value.isalpha():
-        raise ValidationError(
-            _("La marca no debe contener caracteres especiales ni números."),
-            code="invalid_marca_letters_only",
-        )
-
-
-def validate_cate_letters_only(value):
-    # Verifica si el valor contiene solo letras (sin caracteres especiales ni números)
-    if not value.isalpha():
-        raise ValidationError(
-            _("La marca no debe contener caracteres especiales ni números."),
-            code="invalid_marca_letters_only",
-        )
-
-
-def validate_precio(value):
-    # Verifica si el valor contiene solo dígitos y un solo punto decimal
-    value_str = str(value)
-    if not value_str.replace(".", "", 1).isdigit():
-        raise ValidationError(
-            _("El precio debe ser un número válido con hasta 2 decimales."),
-            code="invalid_precio",
-        )
-
-
-def validate_stock_range(value):
-    # Verifica si el valor está dentro del rango permitido (0 a 1000)
-    if value is None or not (0 <= value <= 9999):
-        raise ValidationError(
-            _("El stock debe ser un número entero entre 0 y 9999."),
-            code="invalid_stock_range",
-        )
-
-
-def validate_stock_positive(value):
-    # Verifica si el valor es un número positivo
-    if value is None or value < 0:
-        raise ValidationError(
-            _("El stock debe ser un número entero positivo."),
-            code="invalid_stock_positive",
-        )
 
 
 # Create your models here.
@@ -209,12 +111,29 @@ class Producto(models.Model):
             )
 
 
+class Pedido(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=100, default="En proceso")
+    total_pedido = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+
+class PedidoItem(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+
+
+class HistorialPedido(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Carrito(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     productos = models.ManyToManyField(Producto, through="CarritoItem")
     fecha = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=100)
 
+    # Asegura que cada usuario tenga un carrito al iniciar sesion
     def __init__(self, request):
         self.request = request
         self.session = request.session
@@ -224,6 +143,8 @@ class Carrito(models.Model):
             self.carrito = self.session["carrito"]
         else:
             self.carrito = carrito
+
+    # Metodos de agregar, guardar, eliminar, restar y limpiar
 
     def agregar(self, producto, precio):
         id = str(producto.id)
@@ -267,3 +188,13 @@ class CarritoItem(models.Model):
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
+
+
+class PaymentInfo(models.Model):
+    pedido = models.OneToOneField(Pedido, on_delete=models.CASCADE)
+    monto_total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_pago = models.DateTimeField(auto_now_add=True)
+    metodo_pago = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"Pago para Pedido {self.pedido.id}"
