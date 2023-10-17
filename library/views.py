@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, PedidoForm
+from django.contrib.auth.decorators import login_required
 
-from .models import Producto, Carrito
+from .models import Carrito, DetallePedido, Pedido, Producto
 
 # Create your views here.
 
@@ -64,6 +65,14 @@ def agregar_producto(request, producto_id):
     producto = Producto.objects.get(id=producto_id)
     precio_serializable = float(producto.precio)
     carrito.agregar(producto, precio_serializable)
+    # carrito.guardar_carrito()
+
+    # Agregar declaraciones print para mostrar los datos del carrito
+    print("Carrito después de agregar producto:")
+    for key, value in carrito.carrito.items():
+        print(
+            f"Producto: {value['nombre']}, Cantidad: {value['cantidad']}, Precio: {value['acumulado']}"
+        )
     return redirect("productos")
 
 
@@ -71,6 +80,13 @@ def eliminar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = Producto.objects.get(id=producto_id)
     carrito.eliminar(producto)
+    # carrito.guardar_carrito()
+    # Agregar declaraciones print para mostrar los datos del carrito
+    print("Carrito después de eliminar producto:")
+    for key, value in carrito.carrito.items():
+        print(
+            f"Producto: {value['nombre']}, Cantidad: {value['cantidad']}, Precio: {value['acumulado']}"
+        )
     return redirect("productos")
 
 
@@ -79,6 +95,13 @@ def restar_producto(request, producto_id):
     producto = Producto.objects.get(id=producto_id)
     precio_serializable = float(producto.precio)
     carrito.restar(producto, precio_serializable)
+    # carrito.guardar_carrito()
+    # Agregar declaraciones print para mostrar los datos del carrito
+    print("Carrito después de restar producto:")
+    for key, value in carrito.carrito.items():
+        print(
+            f"Producto: {value['nombre']}, Cantidad: {value['cantidad']}, Precio: {value['acumulado']}"
+        )
     return redirect("productos")
 
 
@@ -88,6 +111,59 @@ def limpiar_producto(request):
     return redirect("productos")
 
 
+def procesar_pedido(request):
+    if request.method == "POST":
+        form = PedidoForm(request.POST)
+        if form.is_valid():
+            # Obtener los datos del formulario de  pago
+            metodo_pago = form.cleaned_data["metodo_pago"]
+
+            # Acceder al carrito del usuario
+            carrito = Carrito(request)
+
+            # Calcular el total sumando los subtotales de los productos en el carrito
+            total = sum(
+                item_data["acumulado"] for item_data in carrito.carrito.values()
+            )
+            # Crear un nuevo objeto Pedido
+            pedido = Pedido(usuario=request.user, total=total, metodo_pago=metodo_pago)
+            pedido.save()
+
+            # Recorrer los productos en el carrito y crear DetallePedido para cada uno
+            for item_id, item_data in carrito.carrito.items():
+                producto_id = item_data["producto_id"]
+                cantidad = item_data["cantidad"]
+                subtotal = item_data["acumulado"]
+
+                producto = Producto.objects.get(id=producto_id)
+
+                detalle_pedido = DetallePedido(
+                    pedido=pedido,
+                    producto=producto,
+                    cantidad=cantidad,
+                    subtotal=subtotal,
+                )
+                detalle_pedido.save()
+
+            # Vaciar el carrito
+            carrito.limpiar()
+
+            # Redirigir a la página de confirmación de pedido con el ID del pedido
+            return redirect("confirmacion_pedido", pedido.id)
+    else:
+        form = PedidoForm()
+
+    # Si no es una solicitud POST, redirigir al inicio u otra página adecuada
+    return render(request, "ver_carrito.html", {"form": form})
+
+
+def confirmacion_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    # Aquí podrías agregar lógica adicional, como enviar un correo de confirmación al usuario, etc.
+    return render(request, "confirmacion_pedido.html", {"pedido": pedido})
+
+
+# Funcion para hacer el registro de clientes con su respectiva asignacion de rol
 def registro_cliente(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)

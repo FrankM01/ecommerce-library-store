@@ -1,0 +1,13 @@
+<!-- confirmacion_pedido.html -->
+<h1>Confirmación de Pedido</h1>
+<p>¡Gracias por tu pedido! A continuación, encontrarás los detalles:</p>
+<p>Fecha del pedido: {{ pedido.fecha }}</p>
+<p>Método de pago: {{ pedido.metodo_pago }}</p>
+<p>Productos:</p>
+<ul>
+    {% for detalle in pedido.detallepedido_set.all %}
+    <li>{{ detalle.producto.nombre }} - Cantidad: {{ detalle.cantidad }} - Subtotal: {{ detalle.subtotal }}</li>
+    {% endfor %}
+</ul>
+<p>Total del Pedido: {{ pedido.total }}</p>
+<p>Estado del Pedido: {{ pedido.estado }}</p>

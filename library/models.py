@@ -111,27 +111,9 @@ class Producto(models.Model):
             )
 
 
-class Pedido(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    fecha = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=100, default="En proceso")
-    total_pedido = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
-
-class PedidoItem(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField()
-
-
-class HistorialPedido(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
 class Carrito(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     productos = models.ManyToManyField(Producto, through="CarritoItem")
-    fecha = models.DateTimeField(auto_now_add=True)
 
     # Asegura que cada usuario tenga un carrito al iniciar sesion
     def __init__(self, request):
@@ -190,11 +172,17 @@ class CarritoItem(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
 
 
-class PaymentInfo(models.Model):
-    pedido = models.OneToOneField(Pedido, on_delete=models.CASCADE)
-    monto_total = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha_pago = models.DateTimeField(auto_now_add=True)
-    metodo_pago = models.CharField(max_length=50)
+class Pedido(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    productos = models.ManyToManyField(Producto, through="DetallePedido")
+    fecha = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    estado = models.CharField(max_length=20, default="pendiente")
+    metodo_pago = models.CharField(max_length=100, default="tarjeta")
 
-    def __str__(self):
-        return f"Pago para Pedido {self.pedido.id}"
+
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)

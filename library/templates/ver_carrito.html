@@ -1,3 +1,4 @@
+<!-- ver carrito plantilla -->
 <div class="alert alert-primary" role="alert">
     <table class="table table-bordered">
         <thead>
@@ -33,11 +34,21 @@
                 <th scope="row">Total:</th>
                 <td colspan="2">$ {{total_carrito}}</td>
             </tr>
+            <tr>
+                <td colspan="3">
+                    <form method="post" action="{% url 'procesar_pedido' %}">
+                        {% csrf_token %}
+                        <label for="metodo_pago">Método de Pago:</label>
+                        <select name="metodo_pago" id="metodo_pago">
+                            <option value="tarjeta">Tarjeta de Crédito</option>
+                            <option value="efectivo">Efectivo</option>
+                            <!-- Agrega más opciones según tus métodos de pago -->
+                        </select>
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </form>
+                </td>
+            </tr>
         </tbody>
     </table>
     <hr>
-</div>
-<div class="row text-center">
-    <div class="col-6"><a href="{% url 'CLS' %}" class="btn btn-danger">Limpiar</a></div>
-    <div class="col-6"><a href="#" class="btn btn-success">Guardar</a></div>
 </div>

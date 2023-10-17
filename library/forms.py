@@ -23,3 +23,9 @@ class CustomUserCreationForm(UserCreationForm):
             "last_name",
             "email",
         )
+
+
+class PedidoForm(forms.Form):
+    metodo_pago = forms.ChoiceField(
+        choices=[("tarjeta", "Tarjeta de crédito"), ("efectivo", "Efectivo")]
+    )
