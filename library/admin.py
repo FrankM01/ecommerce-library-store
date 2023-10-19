@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Producto, Categoria
+from .models import DetallePedido, PaymentInfo, Pedido, Producto, Categoria
 from django.utils.html import format_html
 
 from django.contrib.auth.admin import UserAdmin
@@ -92,3 +92,36 @@ UserAdmin.list_display += ("age", "phone_number")
 # Registra el modelo User con la clase de administración personalizada
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
+
+
+@admin.register(Pedido)
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = (
+        "usuario",
+        "total",
+        "estado",
+    )
+    readonly_fields = (
+        "id",
+        "usuario",
+        "total",
+        "estado",
+    )
+    list_filter = ("estado",)
+    search_fields = ("id", "usuario__username")
+
+
+@admin.register(DetallePedido)
+class DetallePedidoAdmin(admin.ModelAdmin):
+    list_display = ("pedido", "producto", "cantidad", "subtotal")
+    readonly_fields = (
+        "pedido",
+        "producto",
+        "cantidad",
+        "subtotal",
+    )
+    list_filter = ("pedido__estado", "producto__categoria")
+    search_fields = ("pedido__id", "producto__nombre")
+
+
+admin.site.register(PaymentInfo)

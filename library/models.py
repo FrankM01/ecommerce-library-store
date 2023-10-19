@@ -165,11 +165,22 @@ class Carrito(models.Model):
         self.session["carrito"] = {}
         self.session.modified = True
 
+    def obtener_carrito(self):
+        return self.carrito
+
 
 class CarritoItem(models.Model):
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
+
+
+class PaymentInfo(models.Model):
+    pedido = models.OneToOneField("Pedido", on_delete=models.CASCADE, null=True)
+    numero_tarjeta = models.CharField(max_length=16)
+    fecha_vencimiento = models.CharField(max_length=5)
+    codigo_seguridad = models.CharField(max_length=3)
+    metodo_pago = models.CharField(max_length=16)
 
 
 class Pedido(models.Model):
@@ -178,7 +189,13 @@ class Pedido(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=20, default="pendiente")
-    metodo_pago = models.CharField(max_length=100, default="tarjeta")
+    payment_info = models.OneToOneField(
+        PaymentInfo,
+        on_delete=models.CASCADE,
+        related_name="pedido_payment_info",
+        default=None,
+        null=True,
+    )
 
 
 class DetallePedido(models.Model):

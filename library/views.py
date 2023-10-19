@@ -1,12 +1,13 @@
+import uuid
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login
-from .forms import CustomUserCreationForm, PedidoForm
+from .forms import CustomUserCreationForm, SimulatedPaymentForm
 from django.contrib.auth.decorators import login_required
 
-from .models import Carrito, DetallePedido, Pedido, Producto
+from .models import Carrito, DetallePedido, PaymentInfo, Pedido, Producto
 
 # Create your views here.
 
@@ -111,22 +112,39 @@ def limpiar_producto(request):
     return redirect("productos")
 
 
+def ver_detalle_carrito(request):
+    # Acceder al carrito del usuario
+    carrito = Carrito(request)
+
+    # Obtener los elementos del carrito
+    elementos_carrito = carrito.obtener_carrito()
+
+    for elemento_id, elemento_info in elementos_carrito.items():
+        elemento_info["subtotal"] = (
+            elemento_info["cantidad"] * elemento_info["acumulado"]
+        )
+
+    return render(
+        request, "detalle_carrito.html", {"elementos_carrito": elementos_carrito}
+    )
+
+
 def procesar_pedido(request):
     if request.method == "POST":
-        form = PedidoForm(request.POST)
-        if form.is_valid():
-            # Obtener los datos del formulario de  pago
-            metodo_pago = form.cleaned_data["metodo_pago"]
+        # Acceder al carrito del usuario
+        carrito = Carrito(request)
 
-            # Acceder al carrito del usuario
-            carrito = Carrito(request)
+        # Calcular el total sumando los subtotales de los productos en el carrito
+        total = sum(item_data["acumulado"] for item_data in carrito.carrito.values())
 
-            # Calcular el total sumando los subtotales de los productos en el carrito
-            total = sum(
-                item_data["acumulado"] for item_data in carrito.carrito.values()
+        # Recuperar el ID de PaymentInfo de la sesión
+        payment_info_id = request.session.get("payment_info_id")
+
+        if payment_info_id:
+            # Crear un objeto Pedido y asignarle el PaymentInfo asociado
+            pedido = Pedido(
+                usuario=request.user, total=total, payment_info_id=payment_info_id
             )
-            # Crear un nuevo objeto Pedido
-            pedido = Pedido(usuario=request.user, total=total, metodo_pago=metodo_pago)
             pedido.save()
 
             # Recorrer los productos en el carrito y crear DetallePedido para cada uno
@@ -144,23 +162,74 @@ def procesar_pedido(request):
                     subtotal=subtotal,
                 )
                 detalle_pedido.save()
+                # Actualizar el stock del producto
+                producto.stock -= cantidad
+                producto.save()
 
             # Vaciar el carrito
             carrito.limpiar()
 
             # Redirigir a la página de confirmación de pedido con el ID del pedido
             return redirect("confirmacion_pedido", pedido.id)
-    else:
-        form = PedidoForm()
 
-    # Si no es una solicitud POST, redirigir al inicio u otra página adecuada
-    return render(request, "ver_carrito.html", {"form": form})
+    # Si no es una solicitud POST o no hay payment_info_id en la sesión, redirigir al inicio u otra página adecuada
+    return render(request, "ver_carrito.html")
 
 
 def confirmacion_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
+    payment_info = pedido.payment_info
     # Aquí podrías agregar lógica adicional, como enviar un correo de confirmación al usuario, etc.
-    return render(request, "confirmacion_pedido.html", {"pedido": pedido})
+    return render(
+        request,
+        "confirmacion_pedido.html",
+        {"pedido": pedido, "payment_info": payment_info},
+    )
+
+
+def simulated_payment(request):
+    if request.method == "POST":
+        form = SimulatedPaymentForm(request.POST)
+        if form.is_valid():
+            # Procesar los datos del formulario simulado
+            card_number = form.cleaned_data["card_number"]
+            expiration_date = form.cleaned_data["expiration_date"]
+            security_code = form.cleaned_data["security_code"]
+            metodo_pago = form.cleaned_data["metodo_pago"]
+
+            # Valida que los campos cumplan con tus criterios
+            if (
+                card_number == "12345678910"
+                and expiration_date == "12/25"
+                and security_code == "123"
+            ):
+                # Crea un objeto PaymentInfo y guárdalo en la base de datos
+                payment_info = PaymentInfo(
+                    numero_tarjeta=card_number,
+                    fecha_vencimiento=expiration_date,
+                    codigo_seguridad=security_code,
+                    metodo_pago=metodo_pago,
+                )
+                payment_info.save()
+
+                # Almacena el ID de PaymentInfo en la sesión
+                request.session["payment_info_id"] = payment_info.id
+                # Luego redirige a la vista de confirmación del pedido
+                return redirect("confirmacion_pago")
+            else:
+                form.add_error(None, "Los datos de la tarjeta son inválidos.")
+        else:
+            form.add_error(None, "El formulario no es válido. Revise los campos.")
+    else:
+        form = SimulatedPaymentForm()
+
+    return render(request, "simulated_payment.html", {"form": form})
+
+
+def confirmacion_pago(request):
+    # Obtener y mostrar los datos del pago simulado
+    # Puedes acceder a los datos guardados en el paso anterior o simplemente mostrar datos simulados.
+    return render(request, "confirmacion_pago.html")
 
 
 # Funcion para hacer el registro de clientes con su respectiva asignacion de rol

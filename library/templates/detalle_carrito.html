@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titulo %} Detalle del Carrito {% endblock %}
+
+
+{% block contenido %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Detalle del Carrito</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for elemento_id, elemento_info in elementos_carrito.items %}
+                    <tr>
+                        <td>{{ elemento_info.nombre }}</td>
+                        <td>{{ elemento_info.cantidad }}</td>
+                        <td>${{ elemento_info.acumulado }}</td>
+                        <td>${{ elemento_info.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    {% include "resumen_compra.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

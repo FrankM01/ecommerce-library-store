@@ -1,4 +1,4 @@
-<!-- ver carrito plantilla -->
+<!-- Formulario de carrito -->
 <div class="alert alert-primary" role="alert">
     <table class="table table-bordered">
         <thead>
@@ -35,20 +35,30 @@
                 <td colspan="2">$ {{total_carrito}}</td>
             </tr>
             <tr>
-                <td colspan="3">
-                    <form method="post" action="{% url 'procesar_pedido' %}">
-                        {% csrf_token %}
-                        <label for="metodo_pago">Método de Pago:</label>
-                        <select name="metodo_pago" id="metodo_pago">
-                            <option value="tarjeta">Tarjeta de Crédito</option>
-                            <option value="efectivo">Efectivo</option>
-                            <!-- Agrega más opciones según tus métodos de pago -->
-                        </select>
-                        <button type="submit" class="btn btn-success">Guardar</button>
-                    </form>
+                <td><a href="{% url 'CLS' %}" class="btn btn-sm btn-danger">Limpiar</a></td>
+                <td>
+                    <!-- Agregar un botón para mostrar el formulario de pago -->
+                    <button id="show-detail-form" class="btn btn-sm btn-success">Continuar</button>
                 </td>
             </tr>
         </tbody>
     </table>
-    <hr>
 </div>
+
+
+<!--Formulario inicialmente oculto de detalle del carrito -->
+<div class="alert alert-primary" role="alert" style="display: none;" id="detail-form">
+    <a href="{% url 'detalle_carrito' %}" class="btn btn-primary">Ver todo el carrito</a>
+</div>
+
+
+<!-- Script para manejar la visibilidad del formulario de pago -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#show-detail-form").on("click", function () {
+            $("#detail-form").show(); // Mostrar el formulario de pago
+            $(this).hide(); // Ocultar el botón "Continuar"
+        });
+    });
+</script>

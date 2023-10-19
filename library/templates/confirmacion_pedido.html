@@ -2,7 +2,7 @@
 <h1>Confirmación de Pedido</h1>
 <p>¡Gracias por tu pedido! A continuación, encontrarás los detalles:</p>
 <p>Fecha del pedido: {{ pedido.fecha }}</p>
-<p>Método de pago: {{ pedido.metodo_pago }}</p>
+<p>Método de pago: {{ payment_info.metodo_pago }}</p>
 <p>Productos:</p>
 <ul>
     {% for detalle in pedido.detallepedido_set.all %}

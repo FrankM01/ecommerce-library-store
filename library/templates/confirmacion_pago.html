@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Confirmación de Pago</title>
+</head>
+
+<body>
+    <h1>Confirmación de Pago</h1>
+    <p>¡Gracias por tu compra!</p>
+    <p>Tu pago ha sido procesado con éxito.</p>
+    <p>Dale al click al boton Guardar para generar el pedido</p>
+    <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.</p>
+
+    <form method="post" action="{% url 'procesar_pedido' %}">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+</body>
+
+</html>

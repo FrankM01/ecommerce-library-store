@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simulación de Pago</title>
+</head>
+
+<body>
+    <h1>Simulación de Pago</h1>
+    <form method="post" action="{% url 'simulated_payment' %}">
+        {% csrf_token %}
+        <h2>Datos Personales</h2>
+
+
+        <label for="first_name">Nombres:</label>
+        <input type="text" id="first_name" name="first_name" required><br>
+        {{ form.first_name.errors }}
+
+
+        <label for="last_name">Apellidos:</label>
+        <input type="text" id="last_name" name="last_name" required><br>
+        {{ form.last_name.errors }}
+
+
+        <label for="num_doc">Número de Documento:</label>
+        <input type="text" id="num_doc" name="num_doc" required><br>
+        {{ form.num_doc.errors }}
+
+
+        <label for="phone_number">Número de Teléfono:</label>
+        <input type="text" id="phone_number" name="phone_number" required><br>
+        {{ form.phone_number.errors }}
+
+        <h2>Metodo de pago</h2>
+
+        <!-- maybe se puede solo con el forumulario  -->
+
+        <label for="metodo_pago">Método de Pago:</label>
+        <select name="metodo_pago" id="metodo_pago">
+            <option value="tarjeta">Tarjeta de Crédito</option>
+            <!-- Agrega más opciones según tus métodos de pago -->
+        </select><br>
+
+
+        <label for="card_number">Número de Tarjeta:</label>
+        <input type="text" id="card_number" name="card_number" required><br>
+        {{ form.card_number.errors }}
+
+        <label for="expiration_date">Fecha de Expiración:</label>
+        <input type="text" id="expiration_date" name="expiration_date" required><br>
+        {{ form.expiration_date.errors }}
+
+        <label for="security_code">Código de Seguridad:</label>
+        <input type="text" id="security_code" name="security_code" required><br>
+        {{ form.security_code.errors }}
+
+
+        <button type="submit" class="btn btn-success">Procesar Pago</button>
+    </form>
+</body>
+
+</html>
+
+{% if form.errors %}
+<div class="alert alert-danger">
+    {{ form.errors }}
+</div>
+{% endif %}

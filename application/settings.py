@@ -115,6 +115,7 @@ LANGUAGE_CODE = "es-pe"
 
 TIME_ZONE = "America/Lima"
 
+
 USE_I18N = True
 
 USE_L10N = True
@@ -128,6 +129,10 @@ LOGOUT_REDIRECT_URL = reverse_lazy("login")
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # Añade aquí la ruta a tus archivos estáticos
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
