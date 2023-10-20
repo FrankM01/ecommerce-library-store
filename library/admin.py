@@ -70,7 +70,16 @@ class CustomUserAdmin(UserAdmin):
         (None, {"fields": ("username", "password")}),
         (
             "Personal info",
-            {"fields": ("first_name", "last_name", "email", "age", "phone_number")},
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "age",
+                    "phone_number",
+                    "dni",
+                )
+            },
         ),
         (
             "Permissions",
@@ -88,7 +97,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-UserAdmin.list_display += ("age", "phone_number")
+UserAdmin.list_display += ("age", "phone_number", "dni")
 # Registra el modelo User con la clase de administración personalizada
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)

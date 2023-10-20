@@ -7,29 +7,13 @@
 
 <body>
     <h1>Simulación de Pago</h1>
+    <h2>Datos Personales</h2>
+    <p>Nombre: {{ user.first_name }}</p>
+    <p>Apellido: {{ user.last_name }}</p>
+    <p>DNI: {{ user.dni }}</p>
+    <p>Teléfono: {{ user.phone_number }}</p>
     <form method="post" action="{% url 'simulated_payment' %}">
         {% csrf_token %}
-        <h2>Datos Personales</h2>
-
-
-        <label for="first_name">Nombres:</label>
-        <input type="text" id="first_name" name="first_name" required><br>
-        {{ form.first_name.errors }}
-
-
-        <label for="last_name">Apellidos:</label>
-        <input type="text" id="last_name" name="last_name" required><br>
-        {{ form.last_name.errors }}
-
-
-        <label for="num_doc">Número de Documento:</label>
-        <input type="text" id="num_doc" name="num_doc" required><br>
-        {{ form.num_doc.errors }}
-
-
-        <label for="phone_number">Número de Teléfono:</label>
-        <input type="text" id="phone_number" name="phone_number" required><br>
-        {{ form.phone_number.errors }}
 
         <h2>Metodo de pago</h2>
 

@@ -1,17 +1,19 @@
-from django.core.validators import FileExtensionValidator
 from django.utils.html import format_html
+from django.core.validators import MaxLengthValidator
+from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import User, Group
 from django.db import models
 from .validators import *
 
 # Var globales
 
+
 # Creacion de clientes en la administracion de Grupos de Django.
 client_group, created = Group.objects.get_or_create(name="Cliente")
 
 User.add_to_class("age", models.PositiveIntegerField(default=1))
 User.add_to_class("phone_number", models.CharField(max_length=9, default=""))
-
+User.add_to_class("dni", models.CharField(max_length=8, default=""))
 
 # Create your models here.
 
@@ -21,10 +23,15 @@ class Categoria(models.Model):
         max_length=100,
         verbose_name="Categoria",
         validators=[validate_cate_length, validate_cate_letters_only],
-        null=True,
-        blank=True,
+        null=False,
+        blank=False,
     )
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(
+        max_length=120,
+        null=False,
+        blank=False,
+        validators=[validate_descripcion_cate_length],
+    )
 
     def __str__(self):
         return self.nombre

@@ -1,8 +1,10 @@
 <!-- confirmacion_pedido.html -->
 <h1>Confirmación de Pedido</h1>
-<p>¡Gracias por tu pedido! A continuación, encontrarás los detalles:</p>
+<p>¡Gracias por tu pedido {{ user.first_name }} ! A continuación, encontrarás los detalles:</p>
 <p>Fecha del pedido: {{ pedido.fecha }}</p>
-<p>Método de pago: {{ payment_info.metodo_pago }}</p>
+<p>Su pedido estara disponible en un plazo de 1 a 2 dias</p>
+<p>Podra acercarse a nuestra tienda principal para poder recojer su pedido</p>
+<p>Solo sera necesario mostrar su Nro DNI</p>
 <p>Productos:</p>
 <ul>
     {% for detalle in pedido.detallepedido_set.all %}
@@ -10,4 +12,3 @@
     {% endfor %}
 </ul>
 <p>Total del Pedido: {{ pedido.total }}</p>
-<p>Estado del Pedido: {{ pedido.estado }}</p>

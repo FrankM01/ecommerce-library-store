@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import CustomUserCreationForm, SimulatedPaymentForm
 from django.contrib.auth.decorators import login_required
-
 from .models import Carrito, DetallePedido, PaymentInfo, Pedido, Producto
 
 # Create your views here.
@@ -199,7 +198,7 @@ def simulated_payment(request):
 
             # Valida que los campos cumplan con tus criterios
             if (
-                card_number == "12345678910"
+                card_number == "1234567891023456"
                 and expiration_date == "12/25"
                 and security_code == "123"
             ):

@@ -14,10 +14,11 @@
         <tbody>
             {% if request.session.carrito.items %}
             {% for key, value in request.session.carrito.items %}
-            <tr>
-                <td>{{value.nombre}}</td>
-                <td>{{value.precio}}</td>
-                <td>{{value.acumulado}}
+            <tr class="producto-row">
+                <td> {{value.nombre}} </td>
+                <td> {{value.acumulado}} </td>
+                <td>
+                    {{value.cantidad}}
                     <a href="{% url 'Add' value.producto_id %}" class="badge btn btn-dark badge-dark">+</a>
                     <a href="{% url 'Sub' value.producto_id %}" class="badge btn btn-dark badge-dark">-</a>
                 </td>
@@ -48,17 +49,23 @@
 
 <!--Formulario inicialmente oculto de detalle del carrito -->
 <div class="alert alert-primary" role="alert" style="display: none;" id="detail-form">
+    <p>Por el momento solo contamos con recojo en tienda</p>
+    <p>Gracias por su comprension</p>
     <a href="{% url 'detalle_carrito' %}" class="btn btn-primary">Ver todo el carrito</a>
 </div>
-
 
 <!-- Script para manejar la visibilidad del formulario de pago -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $("#show-detail-form").on("click", function () {
-            $("#detail-form").show(); // Mostrar el formulario de pago
-            $(this).hide(); // Ocultar el botón "Continuar"
+            // Verificar si hay elementos en el carrito
+            if ($(".producto-row").length > 0) {
+                $("#detail-form").show(); // Mostrar el formulario de pago
+                $(this).hide(); // Ocultar el botón "Continuar"
+            } else {
+                alert("No hay productos en el carrito. Agrega productos antes de continuar.");
+            }
         });
     });
 </script>
