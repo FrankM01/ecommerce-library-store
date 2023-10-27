@@ -1,68 +1,156 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <title>{% block titulo %} {% endblock %}</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Venta de Productos de utiles escolares y muchos mas!">
 
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#09f">
 
+    <link rel="icon" type="image/png" href="/static/img/logo.jpg">
+
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Poppins:wght@300;400;500;600&family=Satisfy&display=swap"
+        rel="stylesheet">
     <!-- Bootstrap CSS v5.2.1 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> -->
+
+
 
 </head>
 
 <body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <img src="{% static 'img/marca.png' %}" alt="Tu Logo" , width="125px">
+                </div>
+                <nav>
+                    <ul id="menu_items">
+                        <li>
+                            <a class="navegacion-link" href="{% url 'inicio' %}">Inicio</a>
+                        </li>
+                        <li>
+                            <a class="navegacion-link" href="{% url 'productos' %}">Productos</a>
+                        </li>
+                        <li>
+                            <a class="navegacion-link" href="{% url 'nosotros' %}">Nosotros</a>
+                        </li>
+                        <li>
+                            <a class="navegacion-link" href="#">Contacto</a>
+                        </li>
+                        <li>
+                            <a class="navegacion-link" href="{% url 'perfil' %}">Cuenta</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'login' %}" class="navegacion-link">Iniciar sesión</a>
+                        </li>
+                    </ul>
+                </nav>
+                <a href=" {% url 'detalle_carrito' %}"><img src="{% static 'img/cart.png' %}" width="30px" height="30px"
+                        alt="imagen de carrito" /></a>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-custom">
-        <a class="navbar-brand" href="{% url 'inicio' %}">
-            <img src="{% static 'img/logo.jpg' %}" class="navbar-logo" alt="Tu Logo">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'productos' %}">Productos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'perfil' %}">Perfil</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                {% block contenido %} {% endblock %}
+                <img src=" {% static 'img/menu.png' %}" class="menu-icon" onclick="menutoggle()"
+                    alt=" imagen de menu de opciones" />
             </div>
         </div>
-    </div>
+    </header>
+
+    <main>
+        <!-- aqui esta en duda si el quitar el header -->
+        <!-- tiene que ver con el color -->
+        <header>
+            <div class="container">
+                {% block contenido %} {% endblock %}
+            </div>
+        </header>
+    </main>
+
+    <footer>
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col-1">
+                        <h3>Bla bla bla</h3>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique, autem.</p>
+                    </div>
+                    <div class="footer-col-2">
+                        <img src="{% static 'img/marca.png' %}" alt="">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique, autem.</p>
+                    </div>
+                    <div class="footer-col-3">
+                        <h3>Enlaces de Interes</h3>
+                        <ul>
+                            <li>Cupones</li>
+                            <li>Blog post</li>
+                            <li>Politicas</li>
+                            <li>Afiliados</li>
+
+                        </ul>
+                    </div>
+                    <div class="footer-col-4">
+                        <h3>Siguenos</h3>
+                        <ul>
+                            <li>Facebook</li>
+                            <li>Twitter</li>
+                            <li>Instagram</li>
+                            <li>Whatsapp</li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <p class="copyright">Copyright &copy; 2023 - Grupo 6</p>
+        </div>
+
+    </footer>
+
+    <!-- js for toggle menu -->
+    <script>
+        var menu_items = document.getElementById("menu_items");
+        menu_items.style.maxHeight = "0px";
+
+        function menutoggle() {
+            if (menu_items.style.maxHeight == "0px") {
+                menu_items.style.maxHeight = "200px";
+            } else {
+                menu_items.style.maxHeight = "0px";
+            }
+        }
+    </script>
 
 
 
 
-    <!-- Bootstrap JavaScript Libraries -->
+
+
+    <!-- Bootstrap JavaScript Libraries
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
         </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
         integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-        </script>
+        </script> -->
 </body>
+
+<script>
+    // Desactivar la función de retroceso en el navegador
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+    });
+</script>
 
 </html>

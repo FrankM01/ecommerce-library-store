@@ -1,12 +1,33 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block contenido %}
-<h2>Iniciar sesión</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Iniciar sesión</button>
-    <a href="{% url 'registro_cliente' %}">¿No tienes una cuenta? Regístrate aquí</a>
-    <a href="{% url 'inicio' %}" class="btn btn-primary">Atras</a>
-</form>
+<div class="account-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+                <img src="{% static 'img/imagen.png' %}" alt="Imagen del login" width="100%">
+            </div>
+            <div class="col-2">
+                <div class="form-container">
+                    <div class="form-btn">
+                        <span>Login</span>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <span>Usuario:</span><br>
+                        <span>{{ form.username }}</span><br>
+                        <span>Contraseña:</span><br>
+                        <span>{{ form.password }}</span><br>
+                        <button type="submit" class="btn btn-primary">Iniciar sesión</button><br>
+                        <a href="{% url 'registro_cliente' %}">¿No tienes una cuenta? Regístrate aquí</a><br>
+                        <a href="{% url 'inicio' %}" class="btn btn-primary">Atras</a><br>
+
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

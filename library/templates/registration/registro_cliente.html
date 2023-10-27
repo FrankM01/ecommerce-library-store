@@ -3,6 +3,61 @@
 
 <head>
     <title>Registro de Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: radial-gradient(#fff, #ffd6d6);
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .fieldWrapper {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .error {
+            color: #ff0000;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -11,41 +66,49 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
         <div class="fieldWrapper">
-            {{ form.first_name.label_tag }} {{ form.first_name }}
-            {{ form.first_name.errors }}
-            <!-- {{ form.first_name.help_text }} -->
+            <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+            {{ form.first_name }}
+            <div class="error">{{ form.first_name.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.last_name.label_tag }} {{ form.last_name }}
-            {{ form.last_name.errors }}
+            <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+            {{ form.last_name }}
+            <div class="error">{{ form.last_name.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.dni.label_tag }} {{ form.dni }}
-            {{ form.dni.errors }}
+            <label for="{{ form.dni.id_for_label }}">DNI</label>
+            {{ form.dni }}
+            <div class="error">{{ form.dni.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.age.label_tag }} {{ form.age }}
-            {{ form.age.errors }}
+            <label for="{{ form.age.id_for_label }}">Edad</label>
+            {{ form.age }}
+            <div class="error">{{ form.age.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.phone_number.label_tag }} {{ form.phone_number }}
-            {{ form.phone_number.errors }}
+            <label for="{{ form.phone_number.id_for_label }}">Número de Teléfono</label>
+            {{ form.phone_number }}
+            <div class="error">{{ form.phone_number.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.username.label_tag }} {{ form.username }}
-            {{ form.username.errors }}
+            <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
+            {{ form.username }}
+            <div class="error">{{ form.username.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.email.label_tag }} {{ form.email }}
-            {{ form.email.errors }}
+            <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+            {{ form.email }}
+            <div class="error">{{ form.email.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.password1.label_tag }} {{ form.password1 }}
-            {{ form.password1.errors }}
+            <label for="{{ form.password1.id_for_label }}">Contraseña</label>
+            {{ form.password1 }}
+            <div class="error">{{ form.password1.errors }}</div>
         </div>
         <div class="fieldWrapper">
-            {{ form.password2.label_tag }} {{ form.password2 }}
-            {{ form.password2.errors }}
+            <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña</label>
+            {{ form.password2 }}
+            <div class="error">{{ form.password2.errors }}</div>
         </div>
         <button type="submit">Registrarse</button>
     </form>

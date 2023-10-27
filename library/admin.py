@@ -12,7 +12,7 @@ class ProductoAdmin(admin.ModelAdmin):
     # readonly_fields = ("estado_stock",)
     list_display = ("id", "nombre", "marca", "precio", "estado_stock")
     # ordering = ("id", "nombre")
-    search_fields = ("nombre", "marca", "categoria")
+    search_fields = ("nombre", "marca")
     # list_editable = ("stock",)
     list_display_links = ("nombre",)
     list_filter = ("categoria",)

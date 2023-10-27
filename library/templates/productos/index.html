@@ -3,38 +3,52 @@
 {% block titulo %} Lista de productos {% endblock %}
 
 {% block contenido %}
-<div class="container">
+
+<!-- featured products -->
+<div class="small-container">
+    <div class="row row-3">
+        <button id="toggleSidebar" class="toggle-button btn">Ver Carrito</button>
+        <h2>Todos los productos</h2>
+        <select>
+            <option value="">Default Shorting</option>
+            <option value="">Short by precio</option>
+            <option value="">Short by marca</option>
+            <option value="">Short by categoria</option>
+        </select>
+
+    </div>
     <div class="row">
-        <div class="col-md-8">
-            <h2>Lista de Productos</h2>
-            <div class="row">
-                {% for producto in productos %}
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="Imagen del producto">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto.nombre }}</h5>
-                            <p class="card-text">
-                                <strong>Marca:</strong> {{ producto.marca }}<br>
-                                <strong>Categoría:</strong> {{ producto.categoria }}<br>
-                                <strong>Precio (S/.):</strong> {{ producto.precio }}<br>
-                                <strong>Stock:</strong> {{ producto.stock }}
-                            </p>
-                            <a href="{% url 'Add' producto.id %}" class="btn btn-primary">Agregar al carrito</a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+        {% for producto in productos %}
+        <div class="col-4">
+            <img src="{{ producto.imagen.url }}" alt="">
+            <h4>{{producto.nombre}}</h4>
+            <p><strong>Marca:</strong> {{ producto.marca }}</p>
+            <p><strong>Precio (S/.):</strong> {{ producto.precio }}</p>
+            <p><strong>Stock:</strong> {{ producto.stock }}</p>
+            <a href="{% url 'Add' producto.id %}" class="btn btn-primary">Agregar al carrito</a>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Carrito de Compras</h5>
-                    {% include "ver_carrito.html" %}
-                </div>
-            </div>
-        </div>
+        {% endfor %}
+    </div>
+    <div class="page-btn">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>&#8594;</span>
     </div>
 </div>
+
+<div id="sidebar" class="sidebar">
+    {% include "ver_carrito.html" %}
+</div>
+
+<script>
+    document.getElementById('toggleSidebar').addEventListener('click', function () {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+    });
+</script>
+
+
+
 {% endblock %}

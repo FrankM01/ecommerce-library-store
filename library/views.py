@@ -18,7 +18,18 @@ from .models import Carrito, DetallePedido, PaymentInfo, Pedido, Producto
 
 def inicio(request):
     username = request.user.username
-    return render(request, "paginas/inicio.html", {"username": username})
+    producto1 = Producto.objects.get(id=1)
+    producto2 = Producto.objects.get(id=2)
+    producto3 = Producto.objects.get(id=3)
+    producto4 = Producto.objects.get(id=4)
+    context = {
+        "username": username,
+        "producto1": producto1,
+        "producto2": producto2,
+        "producto3": producto3,
+        "producto4": producto4,
+    }
+    return render(request, "paginas/inicio.html", context)
 
 
 def nosotros(request):

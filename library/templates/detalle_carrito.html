@@ -4,40 +4,60 @@
 
 
 {% block contenido %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-8">
-            <h2>Detalle del Carrito</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for elemento_id, elemento_info in elementos_carrito.items %}
-                    <tr>
-                        <td>{{ elemento_info.nombre }}</td>
-                        <td>{{ elemento_info.cantidad }}</td>
-                        <td>${{ elemento_info.acumulado }}</td>
-                        <td>${{ elemento_info.subtotal }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    {% include "resumen_compra.html" %}
-                </div>
-            </div>
-        </div>
+<!-- cart items details -->
+<div class="small-container cart-page">
+    <h2>Detalle del Carrito</h2>
+    <br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio acumulado (x item)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for elemento_id, elemento_info in elementos_carrito.items %}
+            <tr>
+                <td>{{ elemento_info.nombre }}</td>
+                <td>{{ elemento_info.cantidad }}</td>
+                <td>S/.{{ elemento_info.acumulado }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="total-price">
+        <table>
+            <tr>
+                <td>Subtotal:</td>
+                <td>S/.{{total_carrito}}</td>
+            </tr>
+            <tr>
+                <td>Total:</td>
+                <td>S/.{{total_carrito}}</td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="{% url 'simulated_payment' %}" class="btn btn-primary">Comprar</a>
+                </td>
+            </tr>
+
+        </table>
     </div>
 </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
 
 {% endblock %}

@@ -3,50 +3,145 @@
 
 <head>
     <title>Simulación de Pago</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: radial-gradient(#fff, #ffd6d6);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #ff523b;
+            color: #fff;
+            padding: 8px 30px;
+            margin: 30px 0;
+            border-radius: 30px;
+            transition: background 0.5s;
+            text-decoration: none;
+
+        }
+
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #007BFF;
+            margin-top: 20px;
+        }
+
+        .user-info {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .payment-method,
+        .payment-info {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .payment-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .alert.alert-danger {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Simulación de Pago</h1>
-    <h2>Datos Personales</h2>
-    <p>Nombre: {{ user.first_name }}</p>
-    <p>Apellido: {{ user.last_name }}</p>
-    <p>DNI: {{ user.dni }}</p>
-    <p>Teléfono: {{ user.phone_number }}</p>
-    <form method="post" action="{% url 'simulated_payment' %}">
-        {% csrf_token %}
+    <div class="payment-container">
+        <h2>Datos Personales</h2>
+        <div class="user-info">
+            <p><strong>Nombre:</strong> {{ user.first_name }}</p>
+            <p><strong>Apellido:</strong> {{ user.last_name }}</p>
+            <p><strong>DNI:</strong> {{ user.dni }}</p>
+            <p><strong>Teléfono:</strong> {{ user.phone_number }}</p>
+        </div>
+        <form method="post" action="{% url 'simulated_payment' %}" class="payment-form">
+            {% csrf_token %}
 
-        <h2>Metodo de pago</h2>
+            <h2>Método de Pago</h2>
 
-        <!-- maybe se puede solo con el forumulario  -->
+            <div class="payment-method">
+                <label for="metodo_pago">Método de Pago:</label>
+                <select name="metodo_pago" id="metodo_pago">
+                    <option value="tarjeta">Tarjeta de Crédito</option>
+                    <!-- Agrega más opciones según tus métodos de pago -->
+                </select>
+            </div>
 
-        <label for="metodo_pago">Método de Pago:</label>
-        <select name="metodo_pago" id="metodo_pago">
-            <option value="tarjeta">Tarjeta de Crédito</option>
-            <!-- Agrega más opciones según tus métodos de pago -->
-        </select><br>
+            <div class="payment-info">
+                <label for="card_number">Número de Tarjeta:</label>
+                <input type="text" id="card_number" name="card_number" required>
+                {{ form.card_number.errors }}
 
+                <label for="expiration_date">Fecha de Expiración:</label>
+                <input type="text" id="expiration_date" name="expiration_date" required>
+                {{ form.expiration_date.errors }}
 
-        <label for="card_number">Número de Tarjeta:</label>
-        <input type="text" id="card_number" name="card_number" required><br>
-        {{ form.card_number.errors }}
+                <label for="security_code">Código de Seguridad:</label>
+                <input type="text" id="security_code" name="security_code" required>
+                {{ form.security_code.errors }}
+            </div>
 
-        <label for="expiration_date">Fecha de Expiración:</label>
-        <input type="text" id="expiration_date" name="expiration_date" required><br>
-        {{ form.expiration_date.errors }}
+            <button type="submit" class="payment-button">Procesar Pago</button>
+            <a href="{% url 'inicio' %}" class="btn">Atras</a><br>
+        </form>
 
-        <label for="security_code">Código de Seguridad:</label>
-        <input type="text" id="security_code" name="security_code" required><br>
-        {{ form.security_code.errors }}
-
-
-        <button type="submit" class="btn btn-success">Procesar Pago</button>
-    </form>
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+        {% endif %}
+    </div>
 </body>
 
-</html>
+<script>
+    // Desactivar la función de retroceso en el navegador
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+    });
+</script>
 
-{% if form.errors %}
-<div class="alert alert-danger">
-    {{ form.errors }}
-</div>
-{% endif %}
+</html>

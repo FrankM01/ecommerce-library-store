@@ -1,14 +1,80 @@
-<!-- confirmacion_pedido.html -->
-<h1>Confirmación de Pedido</h1>
-<p>¡Gracias por tu pedido {{ user.first_name }} ! A continuación, encontrarás los detalles:</p>
-<p>Fecha del pedido: {{ pedido.fecha }}</p>
-<p>Su pedido estara disponible en un plazo de 1 a 2 dias</p>
-<p>Podra acercarse a nuestra tienda principal para poder recojer su pedido</p>
-<p>Solo sera necesario mostrar su Nro DNI</p>
-<p>Productos:</p>
-<ul>
-    {% for detalle in pedido.detallepedido_set.all %}
-    <li>{{ detalle.producto.nombre }} - Cantidad: {{ detalle.cantidad }} - Subtotal: {{ detalle.subtotal }}</li>
-    {% endfor %}
-</ul>
-<p>Total del Pedido: {{ pedido.total }}</p>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Confirmación de Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .confirmation-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 3px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="confirmation-container">
+        <h1>Confirmación de Pedido</h1>
+        <p>¡Gracias por tu pedido, {{ user.first_name }}!</p>
+        <p>A continuación, encontrarás los detalles:</p>
+        <p>Fecha del pedido: {{ pedido.fecha }}</p>
+        <p>Tu pedido estará disponible en un plazo de 1 a 2 días.</p>
+        <p>Puedes recogerlo en nuestra tienda principal presentando tu Número de DNI.</p>
+        <p>Productos:</p>
+        <ul>
+            {% for detalle in pedido.detallepedido_set.all %}
+            <li>{{ detalle.producto.nombre }} - Cantidad: {{ detalle.cantidad }} - Subtotal: {{ detalle.subtotal }}</li>
+            {% endfor %}
+        </ul>
+        <p>Total del Pedido: {{ pedido.total }}</p>
+        <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a><br>
+    </div>
+</body>
+
+<script>
+    // Desactivar la función de retroceso en el navegador
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+    });
+</script>
+
+</html>
