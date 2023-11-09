@@ -3,6 +3,7 @@ from django.core.validators import MaxLengthValidator
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.contrib import messages
 from .validators import *
 
 # Var globales
@@ -135,18 +136,20 @@ class Carrito(models.Model):
 
     # Metodos de agregar, guardar, eliminar, restar y limpiar
 
-    def agregar(self, producto, precio):
+    def agregar(self, producto, precio, cantidad_solicitada=1):
         id = str(producto.id)
         if id not in self.carrito.keys():
             self.carrito[id] = {
                 "producto_id": producto.id,
                 "nombre": producto.nombre,
                 "acumulado": precio,
-                "cantidad": 1,
+                "cantidad": cantidad_solicitada,
             }
         else:
-            self.carrito[id]["cantidad"] += 1
-            self.carrito[id]["acumulado"] += precio
+            cantidad_total = self.carrito[id]["cantidad"] + cantidad_solicitada
+            if cantidad_total <= producto.stock:
+                self.carrito[id]["cantidad"] = cantidad_total
+                self.carrito[id]["acumulado"] += precio * cantidad_solicitada
         self.guardar_carrito()
 
     def guardar_carrito(self):

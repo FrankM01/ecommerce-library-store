@@ -1,4 +1,4 @@
-import uuid
+from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
@@ -58,7 +58,15 @@ def login_view(request):
 
 
 def productos(request):
-    productos = Producto.objects.all().order_by("nombre", "stock")
+    productos = Producto.objects.all().order_by("nombre")
+    orden = request.GET.get("orden")
+    if orden == "precio":
+        productos = productos.order_by("precio")
+    elif orden == "marca":
+        productos = productos.order_by("marca")
+    elif orden == "categoria":
+        productos = productos.order_by("categoria")
+
     return render(request, "productos/index.html", {"productos": productos})
     # print(productos)
 
@@ -75,15 +83,18 @@ def agregar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = Producto.objects.get(id=producto_id)
     precio_serializable = float(producto.precio)
-    carrito.agregar(producto, precio_serializable)
-    # carrito.guardar_carrito()
 
-    # Agregar declaraciones print para mostrar los datos del carrito
-    print("Carrito después de agregar producto:")
-    for key, value in carrito.carrito.items():
-        print(
-            f"Producto: {value['nombre']}, Cantidad: {value['cantidad']}, Precio: {value['acumulado']}"
+    cantidad_solicitada = int(request.POST.get("cantidad", 1))
+
+    if cantidad_solicitada <= 0:
+        messages.error(request, "La cantidad debe ser mayor que cero.")
+    elif cantidad_solicitada > producto.stock:
+        messages.error(
+            request, f"No hay suficiente stock disponible para {producto.nombre}."
         )
+    else:
+        carrito.agregar(producto, precio_serializable, cantidad_solicitada)
+
     return redirect("productos")
 
 
@@ -91,7 +102,7 @@ def eliminar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = Producto.objects.get(id=producto_id)
     carrito.eliminar(producto)
-    # carrito.guardar_carrito()
+
     # Agregar declaraciones print para mostrar los datos del carrito
     print("Carrito después de eliminar producto:")
     for key, value in carrito.carrito.items():

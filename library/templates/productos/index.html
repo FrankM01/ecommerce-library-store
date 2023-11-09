@@ -9,12 +9,16 @@
     <div class="row row-3">
         <button id="toggleSidebar" class="toggle-button btn">Ver Carrito</button>
         <h2>Todos los productos</h2>
-        <select>
-            <option value="">Default Shorting</option>
-            <option value="">Short by precio</option>
-            <option value="">Short by marca</option>
-            <option value="">Short by categoria</option>
-        </select>
+        <form method="GET" action="{% url 'productos' %}">
+            <select name="orden">
+                <option value="">Default Shorting</option>
+                <option value="precio">Short by precio</option>
+                <option value="marca">Short by marca</option>
+                <option value="categoria">Short by categoria</option>
+            </select>
+            <input type="submit" value="Filtrar" class="btn">
+        </form>
+
 
     </div>
     <div class="row">

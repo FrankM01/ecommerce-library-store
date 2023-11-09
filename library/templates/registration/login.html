@@ -25,9 +25,15 @@
                     </form>
 
 
+
                 </div>
             </div>
         </div>
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
