@@ -23,6 +23,7 @@
     </div>
     <div class="row">
         {% for producto in productos %}
+        {% if producto.stock > 0%}
         <div class="col-4">
             <img src="{{ producto.imagen.url }}" alt="">
             <h4>{{producto.nombre}}</h4>
@@ -31,6 +32,7 @@
             <p><strong>Stock:</strong> {{ producto.stock }}</p>
             <a href="{% url 'Add' producto.id %}" class="btn btn-primary">Agregar al carrito</a>
         </div>
+        {% endif %}
         {% endfor %}
     </div>
     <div class="page-btn">
